@@ -1,6 +1,6 @@
 <template>
   <v-app id="inspire" :dark="isDark">
-    <v-navigation-drawer fixed clipped v-model="drawer" app style="width:250px;">
+    <v-navigation-drawer fixed clipped v-model="drawer" app>
       <v-list dense>
         <v-subheader class="mt-3 grey--text text--darken-1">平台资源</v-subheader>
         <v-list-tile v-for="item in conentList" :key="item.text" @click="save">
@@ -67,7 +67,9 @@
       <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
         <i style="padding-left:20px" class="material-icons">video_library</i>
       <v-toolbar-title class="mr-5 align-center">
-        <span class="title" style="margin:10px">易学</span>
+        <span class="title" style="margin:10px">
+          <a href="/" style="color:white">易学</a>
+        </span>
       </v-toolbar-title>
       <v-spacer></v-spacer>
       <v-layout row align-center style="max-width: 450px">

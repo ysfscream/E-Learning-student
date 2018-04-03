@@ -33,7 +33,7 @@
           <v-flex v-for="(video, index) in videoList" :key="index" xs12 md4>
             <v-card>
               <div class="video-media">
-                <video :src="video.video" style="height:150px; width:100%;"></video>
+                <video :src="video.video" style="max-width:100%;"></video>
               </div>
               <v-card-title primary-title>
                 <div>
@@ -42,7 +42,13 @@
                 </div>
               </v-card-title>
               <v-card-actions>
-                <v-btn color="orange">观看</v-btn>
+                <v-btn
+                  color="orange"
+                  @click="$router.push({
+                    path: `/videosView/${video.videoId}`,
+                    query: { teacher: video.teacherName } })">
+                  观看
+                </v-btn>
                 <v-spacer></v-spacer>
                 <v-btn icon>
                   <v-icon>favorite</v-icon>
@@ -67,7 +73,13 @@
               </v-card-title>
               <div style="padding:0 0 10px 10px;">{{ doc.description }}</div>
               <v-card-actions>
-                <v-btn color="green">阅读</v-btn>
+                <v-btn
+                  color="green"
+                  @click="$router.push({
+                    path: `/docsView/${doc.docsId}`,
+                    query: { teacher: doc.teacherName } })">
+                  阅读
+                </v-btn>
                 <v-spacer></v-spacer>
                 <v-btn icon>
                   <v-icon color="white">favorite</v-icon>
@@ -92,7 +104,7 @@
               </v-card-title>
               <div style="padding:0 0 10px 10px;">{{ ppt.description }}</div>
               <v-card-actions>
-                <v-btn color="blue">下载</v-btn>
+                <v-btn color="blue" @click="download(ppt.ppt)">下载</v-btn>
                 <v-spacer></v-spacer>
                 <v-btn icon>
                   <v-icon color="white">favorite</v-icon>
@@ -161,7 +173,6 @@ export default {
     },
     loadRecommend() {
       httpGet('/home/getRecommend').then((response) => {
-        console.log(response)
         this.videoList = response.data.items.recommend.videos
         this.docsList = response.data.items.recommend.docs
         this.PPTList = response.data.items.recommend.PPTs
@@ -169,6 +180,12 @@ export default {
       })
     },
     target(link) {
+      const aTag = document.createElement('a')
+      aTag.href = link
+      aTag.target = '_blank'
+      aTag.click()
+    },
+    download(link) {
       const aTag = document.createElement('a')
       aTag.href = link
       aTag.target = '_blank'
@@ -191,9 +208,6 @@ export default {
     img {
       height: 140%;
     }
-  }
-  .video-media {
-    padding: 10px;
   }
 }
 </style>

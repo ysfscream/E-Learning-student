@@ -17,6 +17,13 @@ module.exports = {
         pathRewrite: {
           '^/e_api': '/api/v1'
         }
+      },
+      '/public': {
+        target: 'http://localhost:3333',
+        changeOrigin: true,
+        pathRewrite: {
+          '^/public': '/public'
+        }
       }
     },
 
