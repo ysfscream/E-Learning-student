@@ -36,6 +36,7 @@ module.exports = {
       props: true,
       ignorePropertyModificationsFor: [
         'state', // for vuex state
+        'logoutState', // for vuex state
         'acc', // for reduce accumulators
         'e' // for e.returnvalue
       ]
@@ -48,6 +49,6 @@ module.exports = {
     'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
     'semi': 0,
     'no-console': 0,
-    'no-alert': 0,
+    'no-alert': 0
   }
 }
