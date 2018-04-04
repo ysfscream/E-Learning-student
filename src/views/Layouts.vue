@@ -1,5 +1,18 @@
 <template>
   <v-app id="inspire" :dark="isDark">
+     <v-snackbar
+      :color="snackbarColor"
+      :timeout="timeout"
+      :top="y === 'top'"
+      :bottom="y === 'bottom'"
+      :right="x === 'right'"
+      :left="x === 'left'"
+      :multi-line="mode === 'multi-line'"
+      :vertical="mode === 'vertical'"
+      v-model="snackbar">
+      {{ snackbarTitle }}
+    </v-snackbar>
+
     <v-navigation-drawer fixed clipped v-model="drawer" app>
       <v-list dense>
         <v-subheader class="mt-3 grey--text text--darken-1">平台资源</v-subheader>
@@ -33,27 +46,32 @@
 
         <v-divider></v-divider>
 
-        <v-list-tile class="mt-3" @click="loginDialog = true">
+        <v-list-tile v-if="!student.token" class="mt-3" @click="loginDialog = true">
           <v-list-tile-action>
             <v-icon color="darken-1">account_circle</v-icon>
           </v-list-tile-action>
           <v-list-tile-title class="text--darken-1">登录到您的账户</v-list-tile-title>
         </v-list-tile>
-        <v-list-tile class="mt-3" @click="registerDialog = true">
+        <v-list-tile v-if="!student.token" class="mt-3" @click="registerDialog = true">
           <v-list-tile-action>
             <v-icon color="darken-1">fiber_new</v-icon>
           </v-list-tile-action>
           <v-list-tile-title class="text--darken-1">暂无账号？立即注册</v-list-tile-title>
         </v-list-tile>
-
-        <!-- <v-list-tile @click="save">
+        <v-list-tile v-if="student.token" class="mt-3" avatar>
+          <v-list-tile-avatar>
+            <img :src="student.headImg" alt="">
+          </v-list-tile-avatar>
+          <v-list-tile-title v-text="student.studentName"></v-list-tile-title>
+        </v-list-tile>
+        <v-list-tile v-if="student.token" class="mt-3" @click="sheet = true">
           <v-list-tile-action>
             <v-icon color="darken-1">settings</v-icon>
           </v-list-tile-action>
           <v-list-tile-title class="text--darken-1">
-            设置您的个人用户
+            设置您的账户
           </v-list-tile-title>
-        </v-list-tile> -->
+        </v-list-tile>
         <v-list-tile class="mt-3">
           <v-list-tile-action>
             <v-icon color="darken-1">invert_colors</v-icon>
@@ -65,6 +83,14 @@
             :label="isDark ? '深色主题' : '浅色主题'"
             v-model="changeColor">
             </v-switch>
+          </v-list-tile-title>
+        </v-list-tile>
+        <v-list-tile v-if="student.token" class="mt-3" @click="logoutDialog = true">
+          <v-list-tile-action>
+            <v-icon color="darken-1">directions_run</v-icon>
+          </v-list-tile-action>
+          <v-list-tile-title class="text--darken-1">
+            退出登录
           </v-list-tile-title>
         </v-list-tile>
       </v-list>
@@ -224,27 +250,44 @@
           <div style="flex: 1 1 auto;"/>
         </v-card>
       </v-dialog>
+      <v-dialog v-model="logoutDialog" max-width="420">
+        <v-card>
+          <v-card-title class="headline">确定要退出登录？</v-card-title>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="red darken-1" flat="flat" @click.native="logoutDialog = false">
+              取消
+            </v-btn>
+            <v-btn color="green darken-1" flat="flat" @click.native="logout">确定</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
     </v-layout>
 
-    <v-snackbar
-      :color="snackbarColor"
-      :timeout="timeout"
-      :top="y === 'top'"
-      :bottom="y === 'bottom'"
-      :right="x === 'right'"
-      :left="x === 'left'"
-      :multi-line="mode === 'multi-line'"
-      :vertical="mode === 'vertical'"
-      v-model="snackbar">
-      {{ snackbarTitle }}
-    </v-snackbar>
+    <v-bottom-sheet v-model="sheet">
+        <v-list>
+          <v-subheader>请选择</v-subheader>
+          <v-list-tile
+            v-for="tile in tiles"
+            :key="tile.title"
+            @click="sheet = false"
+            class="mt-4">
+            <v-list-tile-avatar>
+              <v-avatar size="32px" tile>
+                <img :src="`/static/doc-images/bottom-sheets/${tile.img}`" :alt="tile.title">
+              </v-avatar>
+            </v-list-tile-avatar>
+            <v-list-tile-title>{{ tile.title }}</v-list-tile-title>
+          </v-list-tile>
+        </v-list>
+      </v-bottom-sheet>
 
   </v-app>
 </template>
 
 
 <script>
-import { httpGet, httpPost } from '@/utils/api'
+import { httpGet, httpPost, httpPut } from '@/utils/api'
 import { mapActions } from 'vuex'
 
 export default {
@@ -253,6 +296,7 @@ export default {
     return {
       registerDialog: false,
       loginDialog: false,
+      logoutDialog: false,
       drawer: true,
       error: false,
       snackbar: false,
@@ -275,6 +319,11 @@ export default {
       registerStudentForm: {},
       remember: true,
       professionList: [],
+      sheet: false,
+      tiles: [
+        { img: 'info.png', title: '修改个人信息' },
+        { img: 'Password.png', title: '更改密码' },
+      ],
     }
   },
   watch: {
@@ -289,8 +338,13 @@ export default {
       this.changeTheme()
     },
   },
+  computed: {
+    student() {
+      return this.$store.state.account.student
+    },
+  },
   methods: {
-    ...mapActions(['CHANGE_THEME']),
+    ...mapActions(['CHANGE_THEME', 'STUDENT_LOGIN', 'STUDENT_LOGOUT']),
     save() {
       console.log('123')
     },
@@ -327,15 +381,26 @@ export default {
       } else {
         httpPost('/students/login', data).then((response) => {
           if (response.data.status === 200) {
-            console.log(response)
+            const studentInfo = response.data.items
             this.loginDialog = false
             this.loginStudentForm = {}
             this.snackbar = true
             this.snackbarTitle = '登录成功'
             this.snackbarColor = 'green'
+            this.STUDENT_LOGIN({ student: studentInfo, remember: this.remember })
           }
         })
       }
+    },
+    logout() {
+      const id = this.student.id
+      httpPut('/students/logout', { id }).then((response) => {
+        if (response.data.status === 201) {
+          this.STUDENT_LOGOUT()
+          this.logoutDialog = false
+          this.loadTags()
+        }
+      })
     },
     loadProfession() {
       httpGet('/departments/professions').then((response) => {

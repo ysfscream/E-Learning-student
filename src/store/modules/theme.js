@@ -1,7 +1,7 @@
 const CHANGE_THEME = 'CHANGE_THEME'
 
 const state = {
-  isDark: JSON.parse(localStorage.getItem('isDark')),
+  isDark: JSON.parse(localStorage.getItem('isDark')) || true,
 }
 
 const mutations = {

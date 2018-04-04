@@ -1,5 +1,4 @@
 import axios from 'axios'
-// import store from '@/store'
 // import router from '@/routes'
 
 const apiPrefix = '/e_api'
@@ -9,7 +8,6 @@ const ELearnAxios = axios.create({
   headers: {
     'Content-Type': 'application/json',
     Accept: 'application/json',
-    // Authorization: `Bearer ${store.state.account.teacher.token}`,
   },
 })
 
