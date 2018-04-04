@@ -22,7 +22,7 @@
       </video>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <div class=".headline">React的第一步</div>
+        <div class=".headline">React(1)</div>
         <v-spacer></v-spacer>
         <v-btn icon>
           <v-icon>favorite</v-icon>
@@ -49,7 +49,7 @@
             <br>
             <p class="title">视频描述：</p>
             <p class="subheading">
-              Javascript 2018 新趋势，ES7，ES8，面向未来
+              React的第一步，如何搭建 react 的开发环境。
             </p>
             <br>
             <p class="title">标签：</p>
@@ -61,6 +61,7 @@
                 JavaScript
               </v-chip>
             </p>
+            <br>
           </v-flex>
           <v-flex xs12 md6>
             <v-toolbar color="light-blue darken-3">
@@ -78,7 +79,7 @@
                     <v-list-tile-content>
                       <v-list-tile-title>{{ item.title }}</v-list-tile-title>
                       <v-list-tile-sub-title style="width:80%;">
-                        {{ item.subtitle }}
+                        {{ item.description }}
                       </v-list-tile-sub-title>
                     </v-list-tile-content>
                     <v-list-tile-action>
@@ -111,7 +112,10 @@ export default {
   data() {
     return {
       video: {},
-      allVideos: [],
+      allVideos: [
+        { title: 'HTML', description: '如何利用 HTML 制作 Tabs' },
+        { title: 'JS 正则表达式', description: '听到正则就害怕？轻松学会正则表达式' },
+      ],
       filename: '1522636521704.pdf',
     }
   },

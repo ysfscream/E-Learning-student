@@ -71,7 +71,7 @@
                     <v-list-tile-content>
                       <v-list-tile-title>{{ item.title }}</v-list-tile-title>
                       <v-list-tile-sub-title style="width:80%;">
-                        {{ item.subtitle }}
+                        {{ item.description }}
                       </v-list-tile-sub-title>
                     </v-list-tile-content>
                     <v-list-tile-action>
@@ -104,7 +104,10 @@ export default {
   data() {
     return {
       doc: {},
-      allDocs: [],
+      allDocs: [
+        { title: 'Tenserflow', description: '机器学习的第一步' },
+        { title: 'ES6', description: '详细解说 ES6' },
+      ],
       filename: '1522636521704.pdf',
     }
   },

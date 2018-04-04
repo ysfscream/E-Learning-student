@@ -3,7 +3,10 @@
     <v-navigation-drawer fixed clipped v-model="drawer" app>
       <v-list dense>
         <v-subheader class="mt-3 grey--text text--darken-1">平台资源</v-subheader>
-        <v-list-tile v-for="item in conentList" :key="item.text" @click="save">
+        <v-list-tile
+          v-for="item in conentList"
+          :key="item.text"
+          @click="$router.push({ path: item.router })">
           <v-list-tile-action>
             <v-icon>{{ item.icon }}</v-icon>
           </v-list-tile-action>
@@ -16,7 +19,11 @@
 
         <v-subheader class="mt-3 grey--text text--darken-1">标签分类</v-subheader>
         <v-list>
-          <v-list-tile v-for="(item, index) in tagList" :key="index" avatar @click="save">
+          <v-list-tile
+            v-for="(item, index) in tagList"
+            :key="index"
+            avatar
+            @click="$router.push({ path: `/tags/${item}` })">
             <v-list-tile-action>
               <v-icon>loyalty</v-icon>
             </v-list-tile-action>
@@ -101,8 +108,8 @@
               <v-layout wrap>
                 <v-flex xs12>
                   <v-text-field
-                    label="邮箱"
-                    v-model="loginStudentForm.email"
+                    label="学号"
+                    v-model="loginStudentForm.studentID"
                     required>
                   </v-text-field>
                 </v-flex>
@@ -220,14 +227,16 @@
     </v-layout>
 
     <v-snackbar
+      :color="snackbarColor"
       :timeout="timeout"
-      color="green"
-      :top="true"
-      multi-line="multi-line"
-      vertical="vertical"
+      :top="y === 'top'"
+      :bottom="y === 'bottom'"
+      :right="x === 'right'"
+      :left="x === 'left'"
+      :multi-line="mode === 'multi-line'"
+      :vertical="mode === 'vertical'"
       v-model="snackbar">
-      注册成功，可以登录！
-      <v-btn dark flat @click.native="snackbar = false">Close</v-btn>
+      {{ snackbarTitle }}
     </v-snackbar>
 
   </v-app>
@@ -247,14 +256,19 @@ export default {
       drawer: true,
       error: false,
       snackbar: false,
+      y: 'top',
+      x: null,
+      mode: '',
       timeout: 6000,
       changeColor: true,
+      snackbarTitle: '',
+      snackbarColor: '',
       isDark: this.$store.state.themeColor.isDark,
       conentList: [
-        { icon: 'trending_up', text: '最受欢迎' },
-        { icon: 'subscriptions', text: '最新上传' },
-        { icon: 'whatshot', text: '点赞最多' },
-        { icon: 'share', text: '全部分享' },
+        { icon: 'trending_up', text: '最受欢迎', router: '/popular' },
+        { icon: 'subscriptions', text: '最新上传', router: '/news' },
+        { icon: 'whatshot', text: '点赞最多', router: '/likes' },
+        { icon: 'share', text: '全部分享', router: '/allShares' },
       ],
       tagList: [],
       loginStudentForm: {},
@@ -298,12 +312,30 @@ export default {
             this.registerDialog = false
             this.registerStudentForm = {}
             this.snackbar = true
+            this.snackbarTitle = '注册成功，可以登录'
+            this.snackbarColor = 'green'
           }
         })
       }
     },
     login() {
-      console.log(this.loginStudentForm)
+      const data = this.loginStudentForm
+      if (!this.loginStudentForm.studentID || !this.loginStudentForm.password) {
+        this.snackbar = true
+        this.snackbarTitle = '请填写完整信息'
+        this.snackbarColor = 'red'
+      } else {
+        httpPost('/students/login', data).then((response) => {
+          if (response.data.status === 200) {
+            console.log(response)
+            this.loginDialog = false
+            this.loginStudentForm = {}
+            this.snackbar = true
+            this.snackbarTitle = '登录成功'
+            this.snackbarColor = 'green'
+          }
+        })
+      }
     },
     loadProfession() {
       httpGet('/departments/professions').then((response) => {

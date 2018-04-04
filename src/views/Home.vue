@@ -182,7 +182,6 @@ export default {
     target(link) {
       const aTag = document.createElement('a')
       aTag.href = link
-      aTag.target = '_blank'
       aTag.click()
     },
     download(link) {
