@@ -270,7 +270,7 @@
           <v-list-tile
             v-for="tile in tiles"
             :key="tile.title"
-            @click="sheet = false"
+            @click="$router.push({ path: `${tile.router}/${student.id}` })"
             class="mt-4">
             <v-list-tile-avatar>
               <v-avatar size="32px" tile>
@@ -288,6 +288,7 @@
 
 <script>
 import { httpGet, httpPost, httpPut } from '@/utils/api'
+import bus from '@/utils/bus'
 import { mapActions } from 'vuex'
 
 export default {
@@ -321,8 +322,8 @@ export default {
       professionList: [],
       sheet: false,
       tiles: [
-        { img: 'info.png', title: '修改个人信息' },
-        { img: 'Password.png', title: '更改密码' },
+        { img: 'info.png', title: '修改个人信息', router: '/editInfo' },
+        { img: 'Password.png', title: '更改密码', router: '/ChangePassword' },
       ],
     }
   },
@@ -336,6 +337,9 @@ export default {
     },
     changeColor() {
       this.changeTheme()
+    },
+    $route() {
+      this.sheet = false
     },
   },
   computed: {
@@ -369,6 +373,10 @@ export default {
             this.snackbarTitle = '注册成功，可以登录'
             this.snackbarColor = 'green'
           }
+        }).catch((error) => {
+          this.snackbar = true
+          this.snackbarTitle = error.response.data.message
+          this.snackbarColor = 'red'
         })
       }
     },
@@ -389,6 +397,11 @@ export default {
             this.snackbarColor = 'green'
             this.STUDENT_LOGIN({ student: studentInfo, remember: this.remember })
           }
+        }).catch((error) => {
+          this.loginStudentForm = {}
+          this.snackbar = true
+          this.snackbarTitle = error.response.data.message
+          this.snackbarColor = 'red'
         })
       }
     },
@@ -422,6 +435,11 @@ export default {
     },
   },
   created() {
+    bus.$on('isWarning', (event) => {
+      this.snackbar = event.snackbar
+      this.snackbarTitle = event.snackbarTitle
+      this.snackbarColor = event.snackbarColor
+    })
     this.loadTags()
   },
 }

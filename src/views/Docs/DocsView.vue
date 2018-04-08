@@ -14,14 +14,14 @@
       </iframe>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <div class=".headline">JS 2018</div>
+        <div class=".headline">{{ doc.title }}</div>
         <v-spacer></v-spacer>
         <v-btn icon>
           <v-icon>favorite</v-icon>
         </v-btn>
-        <span>123</span>
+        <span>{{ doc.likes }}</span>
         <v-spacer></v-spacer>
-        <span>100 次阅读</span>
+        <span>{{ doc.view }} 次阅读</span>
         <v-spacer></v-spacer>
       </v-card-actions>
     </v-card>
@@ -33,15 +33,15 @@
         <v-layout row wrap>
           <v-flex xs12 md6>
             <p class="title">
-            上传教师：
+              上传教师：
             </p>
             <p class="subheading">
-              Yushifan
+              {{ doc.teacherName }}
             </p>
             <br>
             <p class="title">文档描述：</p>
             <p class="subheading">
-              Javascript 2018 新趋势，ES7，ES8，面向未来
+              {{ doc.description }}
             </p>
             <br>
             <p class="title">标签：</p>
@@ -50,7 +50,7 @@
                 <v-avatar>
                   <v-icon>code</v-icon>
                 </v-avatar>
-                JavaScript
+                {{ doc.tag }}
               </v-chip>
             </p>
             <br>
@@ -76,8 +76,10 @@
                     </v-list-tile-content>
                     <v-list-tile-action>
                       <v-list-tile-action-text>
-                        <v-btn color="green">
-                          <span style="color:white;">阅读</span>
+                        <v-btn
+                          color="green"
+                          @click="view(item.docsId, item.teacherName)">
+                          阅读
                         </v-btn>
                       </v-list-tile-action-text>
                     </v-list-tile-action>
@@ -104,23 +106,39 @@ export default {
   data() {
     return {
       doc: {},
-      allDocs: [
-        { title: 'Tenserflow', description: '机器学习的第一步' },
-        { title: 'ES6', description: '详细解说 ES6' },
-      ],
-      filename: '1522636521704.pdf',
+      allDocs: [],
+      filename: '',
     }
   },
-  // computed: {
-  //   filename() {
-  //     const url = this.$route.query.url.split('/')
-  //     return url[url.length - 1]
-  //   },
-  // },
+  computed: {
+    id() {
+      return this.$route.params.id
+    },
+    teacherName() {
+      return this.$route.query.teacher
+    },
+  },
   methods: {
     loadData() {
-      httpGet('getDocs/')
+      httpGet(`/students/getDocs/${this.id}?teacherName=${this.teacherName}`).then((response) => {
+        this.doc = response.data.items.currentDoc
+        this.allDocs = response.data.items.restDocs
+        const filenameList = this.doc.doc.split('/')
+        this.filename = filenameList[filenameList.length - 1]
+      })
     },
+    view(id, teacherName) {
+      this.$router.push({
+        path: `/docsView/${id}`,
+        query: {
+          teacher: teacherName,
+        },
+      })
+      this.loadData()
+    },
+  },
+  created() {
+    this.loadData()
   },
 }
 </script>
