@@ -52,14 +52,19 @@ export default {
     }
   },
   methods: {
-    loadRecommend() {
-      httpGet('/home/getRecommend').then((response) => {
-        this.shareList = response.data.items.recommend.shares
+    loadData() {
+      httpGet('/platform/getShares').then((response) => {
+        this.shareList = response.data.items.shareList
       })
+    },
+    target(link) {
+      const aTag = document.createElement('a')
+      aTag.href = link
+      aTag.click()
     },
   },
   created() {
-    this.loadRecommend()
+    this.loadData()
   },
 }
 </script>
