@@ -1,7 +1,8 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 
-// import store from '@/store'
+import store from '@/store'
+import bus from '@/utils/bus'
 
 import routes from './routes'
 
@@ -12,16 +13,21 @@ const router = new VueRouter({
   routes,
 })
 
-// router.beforeEach((to, from, next) => {
-//   if (to.meta.requiresAuth) {
-//     if (!store.state.account.teacher.token) {
-//       next({ path: '/login' })
-//     } else {
-//       next()
-//     }
-//   } else {
-//     next()
-//   }
-// })
+router.beforeEach((to, from, next) => {
+  if (to.meta.requiresAuth) {
+    if (!store.state.account.student.token) {
+      next({ path: '/home' })
+      bus.$emit('isWarning', {
+        snackbar: true,
+        snackbarTitle: '抱歉！ 在浏览之前，请先登录',
+        snackbarColor: 'amber accent-4',
+      })
+    } else {
+      next()
+    }
+  } else {
+    next()
+  }
+})
 
 export default router

@@ -9,27 +9,20 @@
         id="video-view-player"
         class="video-js"
         controls
+        :src="video.video"
         preload="auto"
         data-setup='{}'>
-        <source src="http://localhost:3333/public/uploads/video/1522637391776.mp4" type="video/mp4">
-        <p class="vjs-no-js">
-          To view this video please enable JavaScript, and consider upgrading to a
-          web browser that
-          <a href="http://videojs.com/html5-video-support/" target="_blank">
-            supports HTML5 video
-          </a>
-        </p>
       </video>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <div class=".headline">React(1)</div>
+        <div class=".headline">{{ video.title }}</div>
         <v-spacer></v-spacer>
         <v-btn icon>
           <v-icon>favorite</v-icon>
         </v-btn>
-        <span>123</span>
+        <span>{{ video.likes }}</span>
         <v-spacer></v-spacer>
-        <span>100 次观看</span>
+        <span>{{ video.view }} 次观看</span>
         <v-spacer></v-spacer>
       </v-card-actions>
     </v-card>
@@ -44,12 +37,12 @@
             上传教师：
             </p>
             <p class="subheading">
-              Yushifan
+              {{ video.teacherName }}
             </p>
             <br>
             <p class="title">视频描述：</p>
             <p class="subheading">
-              React的第一步，如何搭建 react 的开发环境。
+              {{ video.description }}
             </p>
             <br>
             <p class="title">标签：</p>
@@ -58,7 +51,7 @@
                 <v-avatar>
                   <v-icon>code</v-icon>
                 </v-avatar>
-                JavaScript
+                {{ video.tag }}
               </v-chip>
             </p>
             <br>
@@ -84,7 +77,7 @@
                     </v-list-tile-content>
                     <v-list-tile-action>
                       <v-list-tile-action-text>
-                        <v-btn color="orange">
+                        <v-btn color="orange" @click="view(item.videoId, item.teacherName)">
                           <span style="color:white;">观看</span>
                         </v-btn>
                       </v-list-tile-action-text>
@@ -112,23 +105,37 @@ export default {
   data() {
     return {
       video: {},
-      allVideos: [
-        { title: 'HTML', description: '如何利用 HTML 制作 Tabs' },
-        { title: 'JS 正则表达式', description: '听到正则就害怕？轻松学会正则表达式' },
-      ],
-      filename: '1522636521704.pdf',
+      allVideos: [],
+      filename: '',
     }
   },
-  // computed: {
-  //   filename() {
-  //     const url = this.$route.query.url.split('/')
-  //     return url[url.length - 1]
-  //   },
-  // },
+  computed: {
+    id() {
+      return this.$route.params.id
+    },
+    teacherName() {
+      return this.$route.query.teacher
+    },
+  },
   methods: {
     loadData() {
-      httpGet('getDocs/')
+      httpGet(`/students/getVideos/${this.id}?teacherName=${this.teacherName}`).then((response) => {
+        this.video = response.data.items.currentVideo
+        this.allVideos = response.data.items.restVideos
+      })
     },
+    view(id, teacherName) {
+      this.$router.push({
+        path: `/videosView/${id}`,
+        query: {
+          teacher: teacherName,
+        },
+      })
+      this.loadData()
+    },
+  },
+  created() {
+    this.loadData()
   },
 }
 </script>
