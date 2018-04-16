@@ -17,7 +17,7 @@
         <v-spacer></v-spacer>
         <div class=".headline">{{ video.title }}</div>
         <v-spacer></v-spacer>
-        <v-btn icon>
+        <v-btn icon @click="like">
           <v-icon>favorite</v-icon>
         </v-btn>
         <span>{{ video.likes }}</span>
@@ -98,7 +98,7 @@
 </template>
 
 <script>
-import { httpGet } from '@/utils/api'
+import { httpGet, httpPut } from '@/utils/api'
 
 export default {
   name: 'videos-view',
@@ -132,6 +132,11 @@ export default {
         },
       })
       this.loadData()
+    },
+    like() {
+      httpPut(`/students/likesVideo/${this.id}?teacherName=${this.teacherName}`).then(() => {
+        this.video.likes += 1
+      })
     },
   },
   created() {
