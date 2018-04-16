@@ -28,16 +28,16 @@ export default {
     }
   },
   methods: {
-    loadRecommend() {
-      httpGet('/home/getRecommend').then((response) => {
-        this.videoList = response.data.items.recommend.videos
-        this.docsList = response.data.items.recommend.docs
-        this.PPTList = response.data.items.recommend.PPTs
+    loadData() {
+      httpGet('/platform/getLikes').then((response) => {
+        this.videoList = response.data.items.likesList.videoList
+        this.docsList = response.data.items.likesList.docsList
+        this.PPTList = response.data.items.likesList.PPTList
       })
     },
   },
   created() {
-    this.loadRecommend()
+    this.loadData()
   },
 }
 </script>

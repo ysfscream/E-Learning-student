@@ -29,10 +29,10 @@ export default {
   },
   methods: {
     loadRecommend() {
-      httpGet('/home/getRecommend').then((response) => {
-        this.videoList = response.data.items.recommend.videos
-        this.docsList = response.data.items.recommend.docs
-        this.PPTList = response.data.items.recommend.PPTs
+      httpGet('/platform/getNew').then((response) => {
+        this.videoList = response.data.items.newList.videoList
+        this.docsList = response.data.items.newList.docsList
+        this.PPTList = response.data.items.newList.PPTList
       })
     },
   },

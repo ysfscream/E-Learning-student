@@ -27,22 +27,27 @@ export default {
       icon: '',
     }
   },
+  watch: {
+    title() {
+      this.loadData()
+    },
+  },
   computed: {
     title() {
       return this.$route.params.tag
     },
   },
   methods: {
-    loadRecommend() {
-      httpGet('/home/getRecommend').then((response) => {
-        this.videoList = response.data.items.recommend.videos
-        this.docsList = response.data.items.recommend.docs
-        this.PPTList = response.data.items.recommend.PPTs
+    loadData() {
+      httpGet(`/platform/getTags/${this.title}`).then((response) => {
+        this.videoList = response.data.items.tagList.videos
+        this.docsList = response.data.items.tagList.docs
+        this.PPTList = response.data.items.tagList.PPTs
       })
     },
   },
   created() {
-    this.loadRecommend()
+    this.loadData()
   },
 }
 </script>
