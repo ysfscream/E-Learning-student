@@ -16,7 +16,7 @@
         <v-spacer></v-spacer>
         <div class=".headline">{{ doc.title }}</div>
         <v-spacer></v-spacer>
-        <v-btn icon>
+        <v-btn icon @click="like">
           <v-icon>favorite</v-icon>
         </v-btn>
         <span>{{ doc.likes }}</span>
@@ -99,7 +99,7 @@
 </template>
 
 <script>
-import { httpGet } from '@/utils/api'
+import { httpGet, httpPut } from '@/utils/api'
 
 export default {
   name: 'docs-view',
@@ -135,6 +135,11 @@ export default {
         },
       })
       this.loadData()
+    },
+    like() {
+      httpPut(`/students/likesDoc/${this.id}?teacherName=${this.teacherName}`).then(() => {
+        this.doc.likes += 1
+      })
     },
   },
   created() {

@@ -50,9 +50,7 @@
                   观看
                 </v-btn>
                 <v-spacer></v-spacer>
-                <v-btn icon>
-                  <v-icon>favorite</v-icon>
-                </v-btn>
+                <v-icon>favorite</v-icon>
                 <span>{{ video.likes }}</span>
                 <v-icon>remove_red_eye</v-icon>
                 <span>{{ video.view }}</span>
@@ -81,9 +79,7 @@
                   阅读
                 </v-btn>
                 <v-spacer></v-spacer>
-                <v-btn icon>
-                  <v-icon color="white">favorite</v-icon>
-                </v-btn>
+                <v-icon color="white">favorite</v-icon>
                 <span>{{ doc.likes }}</span>
                 <v-icon color="white">remove_red_eye</v-icon>
                 <span>{{ doc.view }}</span>
@@ -106,9 +102,7 @@
               <v-card-actions>
                 <v-btn color="blue" @click="download(ppt.ppt)">下载</v-btn>
                 <v-spacer></v-spacer>
-                <v-btn icon>
-                  <v-icon color="white">favorite</v-icon>
-                </v-btn>
+                <v-icon color="white">favorite</v-icon>
                 <span>{{ ppt.likes }}</span>
               </v-card-actions>
             </v-card>

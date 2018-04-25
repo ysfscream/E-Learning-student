@@ -414,6 +414,7 @@ export default {
           this.loadTags()
         }
       })
+      this.$router.push('/home')
     },
     loadProfession() {
       httpGet('/departments/professions').then((response) => {
