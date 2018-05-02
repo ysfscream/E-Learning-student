@@ -146,6 +146,7 @@
 
 
 <script>
+import bus from '@/utils/bus'
 import { httpGet } from '../utils/api'
 
 export default {
@@ -158,6 +159,11 @@ export default {
       shareList: [],
       slideshows: [],
     }
+  },
+  computed: {
+    student() {
+      return this.$store.state.account.student
+    },
   },
   methods: {
     loadSilidshows() {
@@ -173,12 +179,30 @@ export default {
         this.shareList = response.data.items.recommend.shares
       })
     },
+    checkToken() {
+      if (!this.student.token) {
+        bus.$emit('isWarning', {
+          snackbar: true,
+          snackbarTitle: '抱歉！ 在浏览之前，请先登录',
+          snackbarColor: 'amber accent-4',
+        })
+        return false
+      }
+      return true
+    },
     target(link) {
+      if (!this.checkToken()) {
+        return
+      }
       const aTag = document.createElement('a')
       aTag.href = link
       aTag.click()
     },
     download(link) {
+      if (!this.checkToken()) {
+        return
+      }
+      this.checkToken()
       const aTag = document.createElement('a')
       aTag.href = link
       aTag.target = '_blank'
