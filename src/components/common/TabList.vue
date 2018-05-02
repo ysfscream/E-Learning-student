@@ -140,7 +140,16 @@ export default {
       text: '123',
     }
   },
+  methods: {
+    download(link) {
+      const aTag = document.createElement('a')
+      aTag.href = link
+      aTag.target = '_blank'
+      aTag.click()
+    },
+  },
 }
+
 </script>
 
 
