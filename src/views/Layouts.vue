@@ -105,16 +105,6 @@
         </span>
       </v-toolbar-title>
       <v-spacer></v-spacer>
-      <v-layout row align-center style="max-width: 450px">
-        <v-text-field
-          color="white"
-          placeholder="Search..."
-          single-line
-          append-icon="search"
-          :append-icon-cb="() => {}"
-          hide-details
-        ></v-text-field>
-      </v-layout>
     </v-toolbar>
 
     <v-content>

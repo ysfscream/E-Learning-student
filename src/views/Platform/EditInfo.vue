@@ -129,6 +129,7 @@ export default {
           })
         }
       })
+      this.$router.push('/home')
     },
     loadProfession() {
       httpGet('/departments/professions').then((response) => {
